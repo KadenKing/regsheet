@@ -1,6 +1,8 @@
-.App {
+@import '~antd/dist/antd.css';
+
+/* .App {
   text-align: center;
-}
+} */
 
 .App-logo {
   height: 40vmin;
@@ -26,6 +28,10 @@
 
 .App-link {
   color: #61dafb;
+}
+
+.highlighted {
+  background-color: yellowgreen;
 }
 
 @keyframes App-logo-spin {
