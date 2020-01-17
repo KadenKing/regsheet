@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
-import logo from './logo.svg';
+import React, { useState, useEffect } from 'react';
 import './App.css';
-import { Layout, Breadcrumb, Row, Col, Input, Typography, Table } from 'antd';
+import { Layout, Breadcrumb, Row, Col, Input } from 'antd';
 import EditableText from './components/EditableText';
 import RegexTable from './components/RegexTable';
 
@@ -20,13 +19,27 @@ return true
 
 function App() {
   const [regex, setRegex] = useState("")
-  const [text, setText] = useState("Editable Text")
+  const [text, setText] = useState("kaden: 25")
+  const [results, setResults] = useState([])
 
   const changeRegex = (newRegex) => {
     if (isValidRegex(newRegex)) {
       setRegex(newRegex)
     }
   }
+
+  useEffect(() => {
+    if(regex === "") {
+      setRegex("^$")
+    }
+  }, [regex])
+
+  useEffect(() => {
+    const re = new RegExp(regex, 'g')
+
+    const matches = text.matchAll(re)
+    setResults([...matches])
+  }, [regex, text])
 
   return (
     <div className="App">
@@ -41,17 +54,16 @@ function App() {
         <Breadcrumb.Item>App</Breadcrumb.Item>
       </Breadcrumb>
       <div style={{ background: '#fff', padding: 24, minHeight: 280 }}>
+        {JSON.stringify(results)}
         <Row gutter={16} style={{marginBottom: 16}}>
-          <Input placeholder={regex} onChange={e => changeRegex(e.target.value)} placeholder="Regex"></Input>
+          <Input onChange={e => changeRegex(e.target.value)} placeholder="Regex"></Input>
         </Row>
       <Row gutter={16} style={{marginBottom: 16, width: '100%'}}>
         <Col span={12}>
-          <EditableText regex={regex} value={text} onChange={setText}>
-
-          </EditableText>
+          <EditableText regex={regex} value={text} onChange={setText}/>
         </Col>
         <Col span={12}>
-        <RegexTable regex={regex}/>
+        <RegexTable results={results} regex={regex}/>
         </Col>
       </Row>
         
