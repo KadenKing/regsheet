@@ -3,23 +3,34 @@ import './App.css';
 import { Layout, Breadcrumb, Row, Col, Input } from 'antd';
 import EditableText from './components/EditableText';
 import RegexTable from './components/RegexTable';
+import { useSelector, useDispatch, Provider } from 'react-redux';
+import setRegexAction from './actions/setRegex'
+import store from './store';
 
-const {Header, Content, Footer} = Layout
+const { Header, Content, Footer } = Layout
 
 const isValidRegex = (regexString) => {
   try {
     new RegExp(regexString);
-} catch(e) {
+  } catch (e) {
     return false
-}
+  }
 
-return true
+  return true
 }
 
 
 function App() {
-  const [regex, setRegex] = useState("")
-  const [text, setText] = useState("kaden: 25")
+  const dispatch = useDispatch()
+  if (!dispatch) {
+    alert('undefined!!')
+  }
+  const regex = useSelector(state => state.regex)
+  const setRegex = (regex) => {
+    dispatch(setRegexAction(regex))
+  }
+
+  const [text, setText] = useState("kaden:  25")
   const [results, setResults] = useState([])
 
   const changeRegex = (newRegex) => {
@@ -29,7 +40,7 @@ function App() {
   }
 
   useEffect(() => {
-    if(regex === "") {
+    if (regex === "") {
       setRegex("^$")
     }
   }, [regex])
@@ -47,29 +58,29 @@ function App() {
         <Header>
           header
         </Header>
-      <Content style={{ padding: '0 50px' }}>
-      <Breadcrumb style={{ margin: '16px 0' }}>
-        <Breadcrumb.Item>Home</Breadcrumb.Item>
-        <Breadcrumb.Item>List</Breadcrumb.Item>
-        <Breadcrumb.Item>App</Breadcrumb.Item>
-      </Breadcrumb>
-      <div style={{ background: '#fff', padding: 24, minHeight: 280 }}>
-        {JSON.stringify(results)}
-        <Row gutter={16} style={{marginBottom: 16}}>
-          <Input onChange={e => changeRegex(e.target.value)} placeholder="Regex"></Input>
-        </Row>
-      <Row gutter={16} style={{marginBottom: 16, width: '100%'}}>
-        <Col span={12}>
-          <EditableText regex={regex} value={text} onChange={setText}/>
-        </Col>
-        <Col span={12}>
-        <RegexTable results={results} regex={regex}/>
-        </Col>
-      </Row>
-        
-      </div>
+        <Content style={{ padding: '0 50px' }}>
+          <Breadcrumb style={{ margin: '16px 0' }}>
+            <Breadcrumb.Item>Home</Breadcrumb.Item>
+            <Breadcrumb.Item>List</Breadcrumb.Item>
+            <Breadcrumb.Item>App</Breadcrumb.Item>
+          </Breadcrumb>
+          <div style={{ background: '#fff', padding: 24, minHeight: 280 }}>
+            {JSON.stringify(results)}
+            <Row gutter={16} style={{ marginBottom: 16 }}>
+              <Input defaultValue={regex} onChange={e => changeRegex(e.target.value)} placeholder="Regex"></Input>
+            </Row>
+            <Row gutter={16} style={{ marginBottom: 16, width: '100%' }}>
+              <Col span={12}>
+                <EditableText regex={regex} value={text} onChange={setText} />
+              </Col>
+              <Col span={12}>
+                <RegexTable results={results} regex={regex} />
+              </Col>
+            </Row>
 
-    </Content>
+          </div>
+
+        </Content>
       </Layout>
       <Footer>Foot</Footer>
     </div>
